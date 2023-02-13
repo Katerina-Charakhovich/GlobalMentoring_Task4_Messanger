@@ -66,5 +66,36 @@ public class TemplateEngineTest {
         assertEquals("Some text: #{tag}", templateEngine
                 .generateMessage(new Template("Some text: #{sometag}"), client));
     }
+    //2.If at least one placeholder value is not provided at runtime – template generator should throw
+    // an exception.
+    @Test
+    public void replacePlaceholders_shouldThrowIllegalStateException_whenValueIsUnknown() {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "test");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            templateEngine
+                    .replacePlaceholders("Some text: #{exception}", tags);
+        });
+    }
 
+    //3.Template generator ignores values for variables provided at runtime that aren’t found from
+    // the template.
+    @Test
+    public void replacePlaceholders_shouldReturnTemplate_whenReadUnknownTag() {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "test");
+        tags.put("unknown", "test");
+        assertEquals("Some text: test", templateEngine
+                    .replacePlaceholders("Some text: #{value}", tags));
+    }
+    //4.System should support values passed in runtime with #{…}. E.g. template is  “Some text: #{value}
+    // and  at runtime #{value} passed as  #{tag}. Output should be “Some text: #{tag}
+
+    @Test
+    public void replacePlaceholders_shouldReturnTemplate_supportSpecificFormat() {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "#{tag}");
+        assertEquals("Some text: #{tag}", templateEngine
+                .replacePlaceholders("Some text: #{value}", tags));
+    }
 }

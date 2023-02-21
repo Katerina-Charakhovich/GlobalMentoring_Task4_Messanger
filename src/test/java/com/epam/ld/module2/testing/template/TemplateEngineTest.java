@@ -2,11 +2,21 @@ package com.epam.ld.module2.testing.template;
 
 
 import com.epam.ld.module2.testing.Client;
+import com.epam.ld.module2.testing.extension.DurationExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -97,5 +107,36 @@ public class TemplateEngineTest {
         tags.put("value", "#{tag}");
         assertEquals("Some text: #{tag}", templateEngine
                 .replacePlaceholders("Some text: #{value}", tags));
+    }
+
+    @TestFactory
+    @com.epam.ld.module2.testing.annotations.DynamicTest
+    Stream<DynamicTest> dynamicTestsFromStream() {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "test");
+        tags.put("unknown", "test");
+        tags.put("value1", "#{tag}");
+        List<String> templates = Arrays.asList(
+                "Some text: #{value}", "Some text: #{value1}");
+        List<String> outputList = Arrays.asList(
+                "Some text: test","Some text: #{tag}");
+
+        return templates.stream()
+                .map(temp -> DynamicTest.dynamicTest("Test for template: " + temp,
+                        () -> {int id = templates.indexOf(temp);
+
+                            assertEquals(outputList.get(id), templateEngine
+                                    .replacePlaceholders(temp,tags));
+                        }));
+    }
+    @ParameterizedTest
+    @CsvSource(value = {"Some text: #{value};Some text: test", "Some text: #{value1};Some text: #{tag}"}, delimiter = ';')
+    void parameterizedTest(String template, String expectedContent) {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "test");
+        tags.put("unknown", "test");
+        tags.put("value1", "#{tag}");
+        assertEquals(templateEngine
+                .replacePlaceholders(template,tags), expectedContent);
     }
 }

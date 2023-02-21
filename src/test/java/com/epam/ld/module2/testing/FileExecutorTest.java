@@ -1,19 +1,12 @@
 package com.epam.ld.module2.testing;
 
-import com.epam.ld.module2.testing.template.TemplateEngine;
 import com.epam.ld.module2.testing.util.FileHelper;
 import com.epam.ld.module2.testing.util.ScannerHelper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mock;
-import org.mockito.Spy;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -31,7 +24,7 @@ public class FileExecutorTest {
         FileHelper fileHelper= mock(FileHelper.class);
         FileExecutor fileExecutor = new FileExecutor("test","test", scannerHelper,fileHelper);
         when(scannerHelper.getClient(any())).thenReturn(client);
-        when(scannerHelper.reaTagValue(anyList())).thenReturn(tags);
+        when(scannerHelper.readTagValue(anyList())).thenReturn(tags);
         when(client.getTags()).thenReturn(tags);
         when(fileHelper.isFileOrDirectory(any())).thenReturn(1);
         when(fileHelper.readTemplateFromFile(any())).thenReturn("Some template #{value}");

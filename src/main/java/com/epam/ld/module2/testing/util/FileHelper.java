@@ -29,7 +29,7 @@ public class FileHelper {
      * @param readFilePath the path
      * @return String
      */
-    public String readTemplateFromFile(String readFilePath) {
+    public String  readTemplateFromFile(String readFilePath) {
         StringBuilder builder = new StringBuilder();
         try (FileInputStream fileInputStream = new FileInputStream(readFilePath)) {
             int readLine;

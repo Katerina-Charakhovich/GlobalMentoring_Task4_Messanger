@@ -16,11 +16,21 @@ class FileHelperTest {
 
     @Test
     @DisableOnWeekends
-    public void readTemplateFromFile() throws IOException {
+    public void readTemplateFromFile_shouldReadTextFromFile() throws IOException {
         final File tempFile = new File(tempDir, "tempFile.txt");
         FileUtils.writeStringToFile(tempFile, "hello world");
         FileHelper fileHelper = new FileHelper();
         String actual = fileHelper.readTemplateFromFile(tempFile.getPath());
         assertEquals("hello world", actual);
     }
+
+    @Test
+    @DisableOnWeekends
+    public void saveTemplateFromFile() throws IOException {
+        final File tempFile = new File(tempDir, "tempFile.txt");
+        String template = "hello world";
+        FileHelper fileHelper = new FileHelper();
+        assertTrue(fileHelper.saveContentToFile(template, tempFile.getPath()));
+    }
+
 }

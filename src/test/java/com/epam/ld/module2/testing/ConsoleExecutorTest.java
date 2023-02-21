@@ -22,7 +22,22 @@ class ConsoleExecutorTest {
         ConsoleExecutor consoleExecutor = new ConsoleExecutor(scannerHelper);
         when(scannerHelper.readTemplateFromConsole()).thenReturn("Some template #{value}");
         when(scannerHelper.getClient(any())).thenReturn(client);
-        when(scannerHelper.reaTagValue(anyList())).thenReturn(tags);
+        when(scannerHelper.readTagValue(anyList())).thenReturn(tags);
+        when(client.getTags()).thenReturn(tags);
+        boolean result = consoleExecutor.execute();
+        assertTrue(result);
+    }
+    @Test
+    void execute_withPartMockScanner() {
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("value", "test");
+        Client client = mock (Client.class);
+        ScannerHelper scannerHelper = mock(ScannerHelper.class);
+        ConsoleExecutor consoleExecutor = new ConsoleExecutor(scannerHelper);
+        when(scannerHelper.readTextFromConsole()).thenReturn("Some template #{value}");
+        when(scannerHelper.readTemplateFromConsole()).thenCallRealMethod();
+        when(scannerHelper.getClient(any())).thenReturn(client);
+        when(scannerHelper.readTagValue(anyList())).thenReturn(tags);
         when(client.getTags()).thenReturn(tags);
         boolean result = consoleExecutor.execute();
         assertTrue(result);

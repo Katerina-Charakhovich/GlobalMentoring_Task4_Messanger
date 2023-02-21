@@ -25,7 +25,7 @@ public class ScannerHelper {
         for (int i = 0; i < countClients; i++) {
             System.out.println(i + ":" + clientList.get(i).getName());
         }
-        int number = scanner.nextInt();
+        int number = readNumberFromConsole();
         return ((number < countClients) && (number > -1)) ? clientList.get(number) : null;
     }
 
@@ -36,22 +36,47 @@ public class ScannerHelper {
      */
     public String readTemplateFromConsole() {
         System.out.println("Enter your template: ");
-        return scanner.nextLine();
+        String text = readTextFromConsole();
+        return text;
     }
+
+    /**
+     * Read int number from console
+     *
+     * @return int
+     */
+    public int readNumberFromConsole() {
+        while(!scanner.hasNextInt()) {
+           System.out.println("Please enter correct number");
+        }
+        return scanner.nextInt();
+    }
+
+    /**
+     * Read line from console
+     *
+     * @return String
+     */
+    public String readTextFromConsole() {
+        String text = scanner.nextLine();
+        while (text.isEmpty()) {
+            System.out.println("Enter valid value:");
+            text = scanner.nextLine();
+        }
+        return text;
+    }
+
     /**
      * Read tag values  from  console
+     *
      * @param tags List of tags to enter values for
      * @return Map
      */
-    public HashMap<String, String> reaTagValue(List<String> tags) {
+    public HashMap<String, String> readTagValue(List<String> tags) {
         HashMap<String, String> fillTags = new HashMap<>();
         for (String tag : tags) {
             System.out.println("Enter '" + tag + "': ");
-            String value = scanner.nextLine();
-            while (value.isEmpty()) {
-                System.out.println("Enter valid tag value:");
-                value = scanner.nextLine();
-            }
+            String value = readTextFromConsole();
             fillTags.put(tag, value);
         }
         return fillTags;

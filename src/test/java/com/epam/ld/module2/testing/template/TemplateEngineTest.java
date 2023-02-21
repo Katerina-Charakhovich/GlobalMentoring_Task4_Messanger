@@ -2,7 +2,7 @@ package com.epam.ld.module2.testing.template;
 
 
 import com.epam.ld.module2.testing.Client;
-import com.epam.ld.module2.testing.extension.DurationExtension;
+import com.epam.ld.module2.testing.extension.SaveResultTestingToFileExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //
 //In console mode the application takes expression from console and prints result to console. No application parameters should be specified to use this mode.
 //In file mode application takes expression from file and output results to file. To use this mode user should specify input and output file names as application parameters.
+@ExtendWith(SaveResultTestingToFileExtension.class)
 public class TemplateEngineTest {
     private static TemplateEngine templateEngine = new TemplateEngine();
     private static Client client = new Client();

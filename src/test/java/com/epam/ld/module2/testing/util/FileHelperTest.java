@@ -1,5 +1,6 @@
 package com.epam.ld.module2.testing.util;
 
+import com.epam.ld.module2.testing.annotations.DisableOnWeekends;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -14,6 +15,7 @@ class FileHelperTest {
     File tempDir;
 
     @Test
+    @DisableOnWeekends
     public void readTemplateFromFile() throws IOException {
         final File tempFile = new File(tempDir, "tempFile.txt");
         FileUtils.writeStringToFile(tempFile, "hello world");

@@ -47,7 +47,7 @@ public class FileExecutor {
      */
     public boolean execute() {
         Client client = scannerHelper.getClient(clientCreator.getClients());
-        Map<String, String> tags = scannerHelper.reaTagValue(client.getTagNames());
+        Map<String, String> tags = scannerHelper.readTagValue(client.getTagNames());
         client.setTags((HashMap<String, String>) tags);
         int validatePathCopyTo = fileHelper.isFileOrDirectory(writeFilePath);
         if (fileHelper.isFileOrDirectory(readFilePath) == 0 && validatePathCopyTo != -1) {

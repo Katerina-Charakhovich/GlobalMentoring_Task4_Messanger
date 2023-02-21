@@ -1,6 +1,9 @@
 package com.epam.ld.module2.testing.template;
 
 import com.epam.ld.module2.testing.Client;
+import com.epam.ld.module2.testing.ConsoleExecutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +24,7 @@ public class TemplateEngine {
     private static final String PATH_TAGS = "tags.properties";
     private static final String EMPTY_STRING = "";
     private static final Pattern PATTERN_TAG = Pattern.compile("#\\{(\\w+\\.?)+}");
+    private static final Logger logger = LogManager.getLogger(TemplateEngine.class);
     private List<String> tags;
 
     public TemplateEngine() {
@@ -56,8 +60,8 @@ public class TemplateEngine {
      *
      * @param template the template
      * @param client   the client
-     * @throws IllegalArgumentException exception
      * @return the string
+     * @throws IllegalArgumentException exception
      */
     public String generateMessage(Template template, Client client) throws IllegalArgumentException {
         if (Objects.isNull(template)) {
@@ -66,15 +70,16 @@ public class TemplateEngine {
         if (Objects.equals(template.getTemplate().trim(), EMPTY_STRING)) {
             throw new IllegalArgumentException("Empty string cannot be passed.");
         }
-        return replacePlaceholders(template.getTemplate(),client.getTags());
+        return replacePlaceholders(template.getTemplate(), client.getTags());
     }
+
     /**
      * Replace placeholders.
      *
-     * @param template the template
+     * @param template     the template
      * @param placeholders the placeholders
-     * @throws IllegalArgumentException exception
      * @return the string*
+     * @throws IllegalArgumentException exception
      */
     public String replacePlaceholders(String template, Map<String, String> placeholders) throws IllegalArgumentException {
         Matcher matcher = Pattern.compile(String.valueOf(PATTERN_TAG)).matcher(template);

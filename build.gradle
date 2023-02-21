@@ -37,6 +37,7 @@ dependencies {
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.6.2')
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
+    testImplementation group: 'junit', name: 'junit', version: '4.7'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.16.0'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.16.0'
     implementation group: 'info.picocli', name: 'picocli', version: '4.5.2'
@@ -46,7 +47,7 @@ dependencies {
 
 test {
     useJUnitPlatform {
-        includeTags "dynamic-test"
+ //       includeTags "dynamic-test"
     }
     testLogging {
         events "passed", "skipped", "failed"

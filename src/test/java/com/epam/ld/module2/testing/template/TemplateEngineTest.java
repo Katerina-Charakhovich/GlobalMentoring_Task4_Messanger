@@ -3,6 +3,7 @@ package com.epam.ld.module2.testing.template;
 import com.epam.ld.module2.testing.Client;
 import com.epam.ld.module2.testing.annotations.DynamicCustomTest;
 import com.epam.ld.module2.testing.extension.SaveResultTestingToFileExtension;
+import org.junit.Rule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,15 +51,6 @@ public class TemplateEngineTest {
     public void shouldReturnTemplate() {
             assertEquals("Some text: test", templateEngine
                     .generateMessage(new Template("Some text: #{value}"), client));
-    }
-
-    //2.If at least one placeholder value is not provided at runtime – template generator should throw
-    // an exception.
-    @Test
-    @Tag("test2")
-    public void shouldThrowIllegalStateException_whenValueIsUnknown() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> templateEngine
-                .generateMessage(new Template("Some text: #{exception}"), client));
     }
 
     //3.Template generator ignores values for variables provided at runtime that aren’t found from
@@ -144,5 +137,22 @@ public class TemplateEngineTest {
         tags.put("value1", "#{tag}");
         assertEquals(templateEngine
                 .replacePlaceholders(template,tags), expectedContent);
+    }
+
+    @Test//junit 5
+    @Tag("test2")
+    public void shouldThrowIllegalStateException_whenValueIsUnknown() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> templateEngine
+                .generateMessage(new Template("Some text: #{exception}"), client));
+    }
+
+    @Rule //junit 4
+    public ExpectedException thrown = ExpectedException.none();
+
+    @org.junit.Test
+    public void validateTemplate_emptyTemplate_testUsingRuleAnnotation() {
+        thrown.expect(IllegalArgumentException.class);
+        templateEngine
+                .generateMessage(new Template("Some text: #{exception}"), client);
     }
 }

@@ -1,20 +1,13 @@
 package com.epam.ld.module2.testing.template;
 
 import com.epam.ld.module2.testing.Client;
-import com.epam.ld.module2.testing.ConsoleExecutor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -22,12 +15,11 @@ import java.util.stream.Collectors;
  */
 public class TemplateEngine {
     private static final String PATH_TAGS = "tags.properties";
-    private static final String EMPTY_STRING = "";
-    private static final Pattern PATTERN_TAG = Pattern.compile("#\\{(\\w+\\.?)+}");
-    private static final Logger logger = LogManager.getLogger(TemplateEngine.class);
     private List<String> tags;
+    private final TemplateParser templateParser;
 
-    public TemplateEngine() {
+    public TemplateEngine(TemplateParser templateParser) {
+        this.templateParser = templateParser;
         tags = loadTags(PATH_TAGS);
     }
 
@@ -64,33 +56,11 @@ public class TemplateEngine {
      * @throws IllegalArgumentException exception
      */
     public String generateMessage(Template template, Client client) throws IllegalArgumentException {
-        if (Objects.isNull(template)) {
-            throw new IllegalArgumentException("Null value cannot be passed.");
-        }
-        if (Objects.equals(template.getTemplate().trim(), EMPTY_STRING)) {
+        Boolean isTemplateValid = templateParser.validateTemplate(template.getTemplate());
+        if (!isTemplateValid) {
             throw new IllegalArgumentException("Empty string cannot be passed.");
         }
-        return replacePlaceholders(template.getTemplate(), client.getTags());
-    }
-
-    /**
-     * Replace placeholders.
-     *
-     * @param template     the template
-     * @param placeholders the placeholders
-     * @return the string*
-     * @throws IllegalArgumentException exception
-     */
-    public String replacePlaceholders(String template, Map<String, String> placeholders) throws IllegalArgumentException {
-        Matcher matcher = Pattern.compile(String.valueOf(PATTERN_TAG)).matcher(template);
-        while (matcher.find()) {
-            String match = matcher.group(1);
-            String placeholder = placeholders.get(match);
-            if (placeholder == null) {
-                throw new IllegalArgumentException("Placeholder for " + match + " not found");
-            }
-            template = template.replace("#{" + match + "}", placeholder);
-        }
-        return template;
+        templateParser.validateTemplate(template.getTemplate());
+        return templateParser.replacePlaceholders(template.getTemplate(), client.getTags());
     }
 }

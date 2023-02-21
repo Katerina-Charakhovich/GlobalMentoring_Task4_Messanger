@@ -3,6 +3,7 @@ package com.epam.ld.module2.testing;
 import com.epam.ld.module2.testing.client.ClientCreator;
 import com.epam.ld.module2.testing.template.Template;
 import com.epam.ld.module2.testing.template.TemplateEngine;
+import com.epam.ld.module2.testing.template.TemplateParser;
 import com.epam.ld.module2.testing.util.FileHelper;
 import com.epam.ld.module2.testing.util.ScannerHelper;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +37,7 @@ public class FileExecutor {
         this.readFilePath = readFilePath;
         this.writeFilePath = writeFilePath;
         this.scannerHelper = scannerHelper;
-        this.templateEngine = new TemplateEngine();
+        this.templateEngine = new TemplateEngine(new TemplateParser());
         this.fileHelper = fileHelper;
     }
 

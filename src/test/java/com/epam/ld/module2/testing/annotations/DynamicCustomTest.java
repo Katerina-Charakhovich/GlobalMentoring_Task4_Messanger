@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Tag("dynamic-test")
-public @interface DynamicTest {
+public @interface DynamicCustomTest {
+
 }
 

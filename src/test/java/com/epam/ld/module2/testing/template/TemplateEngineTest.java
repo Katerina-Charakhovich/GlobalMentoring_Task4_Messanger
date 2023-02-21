@@ -1,7 +1,7 @@
 package com.epam.ld.module2.testing.template;
 
-
 import com.epam.ld.module2.testing.Client;
+import com.epam.ld.module2.testing.annotations.DynamicCustomTest;
 import com.epam.ld.module2.testing.extension.SaveResultTestingToFileExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //In file mode application takes expression from file and output results to file. To use this mode user should specify input and output file names as application parameters.
 @ExtendWith(SaveResultTestingToFileExtension.class)
 public class TemplateEngineTest {
-    private static TemplateEngine templateEngine = new TemplateEngine();
-    private static Client client = new Client();
+    private static final TemplateEngine templateEngine = new TemplateEngine();
+    private static final Client client = new Client();
 
     @BeforeAll
     public static void init() {
@@ -45,6 +45,7 @@ public class TemplateEngineTest {
     //   1.The system replaces variable placeholders like #{subject} from a template with values provided
     //   at runtime.
     @Test
+    @Tag("test1")
     public void shouldReturnTemplate() {
             assertEquals("Some text: test", templateEngine
                     .generateMessage(new Template("Some text: #{value}"), client));
@@ -53,16 +54,16 @@ public class TemplateEngineTest {
     //2.If at least one placeholder value is not provided at runtime – template generator should throw
     // an exception.
     @Test
+    @Tag("test2")
     public void shouldThrowIllegalStateException_whenValueIsUnknown() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            templateEngine
-                    .generateMessage(new Template("Some text: #{exception}"), client);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> templateEngine
+                .generateMessage(new Template("Some text: #{exception}"), client));
     }
 
     //3.Template generator ignores values for variables provided at runtime that aren’t found from
     // the template.
     @Test
+    @Tag("test3")
     public void shouldReturnTemplate_whenReadUnknownTag() {
         client.getTags().put("unknown", "test");
         assertEquals("Some text: test", templateEngine
@@ -72,26 +73,28 @@ public class TemplateEngineTest {
     //4.System should support values passed in runtime with #{…}. E.g. template is  “Some text: #{value}
     // and  at runtime #{value} passed as  #{tag}. Output should be “Some text: #{tag}
     @Test
+    @Tag("test4")
     public void shouldReturnTemplate_supportSpecificFormat() {
         client.getTags().put("sometag", "#{tag}");
         assertEquals("Some text: #{tag}", templateEngine
                 .generateMessage(new Template("Some text: #{sometag}"), client));
     }
+
     //2.If at least one placeholder value is not provided at runtime – template generator should throw
     // an exception.
     @Test
+    @Tag("test2")
     public void replacePlaceholders_shouldThrowIllegalStateException_whenValueIsUnknown() {
         HashMap<String, String> tags = new HashMap<>();
         tags.put("value", "test");
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            templateEngine
-                    .replacePlaceholders("Some text: #{exception}", tags);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> templateEngine
+                .replacePlaceholders("Some text: #{exception}", tags));
     }
 
     //3.Template generator ignores values for variables provided at runtime that aren’t found from
     // the template.
     @Test
+    @Tag("test3")
     public void replacePlaceholders_shouldReturnTemplate_whenReadUnknownTag() {
         HashMap<String, String> tags = new HashMap<>();
         tags.put("value", "test");
@@ -99,10 +102,11 @@ public class TemplateEngineTest {
         assertEquals("Some text: test", templateEngine
                     .replacePlaceholders("Some text: #{value}", tags));
     }
+
     //4.System should support values passed in runtime with #{…}. E.g. template is  “Some text: #{value}
     // and  at runtime #{value} passed as  #{tag}. Output should be “Some text: #{tag}
-
     @Test
+    @Tag("test4")
     public void replacePlaceholders_shouldReturnTemplate_supportSpecificFormat() {
         HashMap<String, String> tags = new HashMap<>();
         tags.put("value", "#{tag}");
@@ -111,7 +115,7 @@ public class TemplateEngineTest {
     }
 
     @TestFactory
-    @com.epam.ld.module2.testing.annotations.DynamicTest
+    @DynamicCustomTest
     Stream<DynamicTest> dynamicTestsFromStream() {
         HashMap<String, String> tags = new HashMap<>();
         tags.put("value", "test");
@@ -130,6 +134,7 @@ public class TemplateEngineTest {
                                     .replacePlaceholders(temp,tags));
                         }));
     }
+
     @ParameterizedTest
     @CsvSource(value = {"Some text: #{value};Some text: test", "Some text: #{value1};Some text: #{tag}"}, delimiter = ';')
     void parameterizedTest(String template, String expectedContent) {

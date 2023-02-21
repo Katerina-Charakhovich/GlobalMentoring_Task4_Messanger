@@ -46,7 +46,7 @@ dependencies {
 
 test {
     useJUnitPlatform {
-//        includeTags "dynamic-test"
+        includeTags "dynamic-test"
     }
     testLogging {
         events "passed", "skipped", "failed"
